@@ -1,29 +1,37 @@
+import { TypographyH1 } from "@/components/typography/typography-h1";
 import { api } from "@/trpc/server";
+import { Suspense } from "react";
+import ProjectsListNew from "./_components/projects-list-new";
+import SearchBar from "./_components/search-bar";
 
-export default async function Home() {
-  // const hello = await api.post.hello.query({ text: "from tRPC" });
-
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <h1></h1>
-    </main>
-  );
+interface HomeProps {
+  searchParams: {
+    page: string;
+    search: string;
+  };
 }
 
-async function CrudShowcase() {
-  const latestPost = await api.post.getLatestProject.query();
+export default async function Home({ searchParams }: HomeProps) {
+  const page = searchParams.page ?? "1";
+  console.log(searchParams.search);
+
+  const projects = await api.post.getProjects.query({
+    page: parseInt(page),
+    limit: 25,
+    searchQuery: searchParams.search,
+  });
 
   return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">
-          Your most recent post: {latestPost.projectLink}
-        </p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      {/* <CreatePost /> */}
-    </div>
+    <main className="container flex min-h-screen flex-col">
+      <header className="my-8">
+        <TypographyH1>Latest Generations</TypographyH1>
+      </header>
+      <SearchBar searchQuery={searchParams.search} />
+      <div className="mx-auto grid w-full grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,_minmax(436px,1fr))]">
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProjectsListNew projects={projects} page={page} />
+        </Suspense>
+      </div>
+    </main>
   );
 }

@@ -1,5 +1,6 @@
 import { index, mysqlTable, serial, text, timestamp, varchar } from "drizzle-orm/mysql-core";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import type { z } from "zod";
 
 export const projects = mysqlTable('projects', {
   id: serial('id').primaryKey(),
@@ -13,5 +14,7 @@ export const projects = mysqlTable('projects', {
   return { projectLinkIdx: index('projectLink').on(table.projectLink) }
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
 export const insertProjectSchema = createInsertSchema(projects);
+export const selectProjectsSchema = createSelectSchema(projects);
+
+export type Project = z.infer<typeof selectProjectsSchema>;

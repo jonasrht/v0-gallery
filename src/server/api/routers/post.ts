@@ -1,15 +1,37 @@
-
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { withCursorPagination } from '@/server/db/db-utils';
+import { projects } from "@/server/db/schema";
+import { z } from "zod";
 
 export const postRouter = createTRPCRouter({
-
-  getLatestProject: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.projects.findFirst({
-      orderBy: (projects, { desc }) => [desc(projects.createdAt)],
-    });
-  }),
+  /**
+   * Get all projects with pagination
+   */
+  getProjects: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.number().nullish(),
+        searchQuery: z.string().optional(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.query.projects.findMany({
+        where: input.searchQuery ? (projects, { sql }) =>
+          sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE)` : undefined,
+        ...withCursorPagination({
+          limit: 32,
+          cursors: [
+            [
+              projects.id,
+              'desc',
+              input.cursor
+            ],
+          ]
+        }),
+      });
+    }),
 });
-
 
 // example of a insert procedure
 // create: publicProcedure
