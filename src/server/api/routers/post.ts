@@ -16,10 +16,14 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .query(({ ctx, input }) => {
-      return ctx.db.query.projects.findMany({
-        where: input.searchQuery ? (projects, { sql }) =>
-          sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE)` : undefined,
-        ...withCursorPagination({
+      console.log('input', input);
+
+      return ctx.db.query.projects.findMany(
+        withCursorPagination({
+          // @ts-expect-error TODO: fix this
+          where: input.searchQuery ? (projects, { sql }) =>
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE)` : undefined,
           limit: 32,
           cursors: [
             [
@@ -29,7 +33,7 @@ export const postRouter = createTRPCRouter({
             ],
           ]
         }),
-      });
+      );
     }),
 });
 

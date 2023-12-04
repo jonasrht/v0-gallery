@@ -1,7 +1,9 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { FC, useState } from "react";
+import type { FC } from "react";
+import { useState } from "react";
 import { StringParam, useQueryParam, withDefault } from "use-query-params";
 
 interface SearchBarProps {
@@ -10,8 +12,9 @@ interface SearchBarProps {
 
 const SearchBar: FC<SearchBarProps> = ({ searchQuery }) => {
   const router = useRouter();
+  // const utils = api.useUtils();
   const [searchValue, setSearchValue] = useState(searchQuery ?? "");
-  const [query, setQuery] = useQueryParam(
+  const [, setQuery] = useQueryParam(
     "search",
     withDefault(StringParam, searchQuery),
   );
@@ -26,11 +29,18 @@ const SearchBar: FC<SearchBarProps> = ({ searchQuery }) => {
   }
 
   return (
-    <Input
-      onChange={handleChange}
-      value={searchValue}
-      onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
-    />
+    <div className="mb-8 flex items-center gap-4">
+      <Input
+        onChange={handleChange}
+        value={searchValue}
+        placeholder="Search..."
+        className="shadow-none"
+        onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
+      />
+      <Button className="ml-2 px-4" variant="default" onClick={handleSearch}>
+        Search
+      </Button>
+    </div>
   );
 };
 
