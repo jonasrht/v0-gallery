@@ -1,6 +1,4 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
-import { withCursorPagination } from '@/server/db/db-utils';
-import { projects } from "@/server/db/schema";
 import { z } from "zod";
 
 export const postRouter = createTRPCRouter({
@@ -18,22 +16,11 @@ export const postRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       console.log('input', input);
 
-      return ctx.db.query.projects.findMany(
-        withCursorPagination({
-          // @ts-expect-error TODO: fix this
-          where: input.searchQuery ? (projects, { sql }) =>
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE)` : undefined,
-          limit: 32,
-          cursors: [
-            [
-              projects.id,
-              'desc',
-              input.cursor
-            ],
-          ]
-        }),
-      );
+      return ctx.db.query.projects.findMany({
+        where: input.searchQuery ? (projects, { sql }) =>
+          sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE) AND id < ${input.cursor ?? 1000000} ORDER BY id DESC` : undefined,
+        limit: input.limit,
+      })
     }),
 });
 
