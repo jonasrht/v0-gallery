@@ -18,28 +18,9 @@ export const postRouter = createTRPCRouter({
 
       return ctx.db.query.projects.findMany({
         where: input.searchQuery ? (projects, { sql }) =>
-          sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE) AND id < ${input.cursor ?? 1000000} ORDER BY id DESC` : undefined,
+          sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE) AND id < ${input.cursor ?? 1000000} ORDER BY id DESC` :
+          (projects, { sql }) => sql`id < ${input.cursor ?? 1000000} ORDER BY id DESC`,
         limit: input.limit,
       })
     }),
 });
-
-// example of a insert procedure
-// create: publicProcedure
-// .input(z.object({ name: z.string().min(1) }))
-// .mutation(async ({ ctx, input }) => {
-//   // simulate a slow db call
-//   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-//   await ctx.db.insert(projects).values({
-//     name: input.name,
-//   });
-// }),
-
-// hello: publicProcedure
-// .input(z.object({ text: z.string() }))
-// .query(({ input }) => {
-//   return {
-//     greeting: `Hello ${input.text}`,
-//   };
-// }),

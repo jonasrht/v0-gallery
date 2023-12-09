@@ -1,4 +1,5 @@
 "use client";
+import Image from "@/components/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Tooltip,
@@ -18,7 +19,7 @@ interface ProjectsListProps {
   searchQuery?: string;
 }
 
-const ProjectsListNew: FC<ProjectsListProps> = ({
+const ProjectsList: FC<ProjectsListProps> = ({
   projects: initialProjects,
   searchQuery,
 }) => {
@@ -42,7 +43,7 @@ const ProjectsListNew: FC<ProjectsListProps> = ({
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      fetchNextPage().catch(() => console.log("error"));
+      fetchNextPage().catch(() => console.log("something went wrong"));
     }
   }, [inView, fetchNextPage, hasNextPage]);
 
@@ -53,7 +54,7 @@ const ProjectsListNew: FC<ProjectsListProps> = ({
           <a href={project.projectLink!} target="_blank" key={project.id}>
             <div className="aspect-preview group relative block w-full overflow-hidden rounded-lg border border-gray-200 transition-all">
               {/* eslint-disable @next/next/no-img-element */}
-              <img
+              <Image
                 src={project.imageLink!}
                 alt={project.imageAlt!}
                 width={658}
@@ -61,7 +62,12 @@ const ProjectsListNew: FC<ProjectsListProps> = ({
               />
               <div className="group relative flex max-w-[70%] items-center gap-2 p-4">
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback>{"U"}</AvatarFallback>
+                  <AvatarFallback>
+                    {project.profileLink
+                      ?.replace("https://v0.dev/", "")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <MyTooltip text={project.prompt!} />
               </div>
@@ -82,7 +88,7 @@ const ProjectsListNew: FC<ProjectsListProps> = ({
   );
 };
 
-export default ProjectsListNew;
+export default ProjectsList;
 
 function MyTooltip({ text }: { text: string }) {
   return (

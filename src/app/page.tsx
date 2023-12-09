@@ -2,7 +2,7 @@ import { TypographyH1 } from "@/components/typography/typography-h1";
 import { api } from "@/trpc/server";
 import Link from "next/link";
 import { Suspense } from "react";
-import ProjectsListNew from "./_components/projects-list-new";
+import ProjectsList from "./_components/projects-list";
 import SearchBar from "./_components/search-bar";
 
 interface HomeProps {
@@ -29,10 +29,7 @@ export default async function Home({ searchParams }: HomeProps) {
       <SearchBar searchQuery={searchParams.search} />
       <div className="mx-auto grid w-full grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,_minmax(436px,1fr))]">
         <Suspense fallback={<Skeleton />}>
-          <ProjectsListNew
-            projects={projects}
-            searchQuery={searchParams.search}
-          />
+          <ProjectsList projects={projects} searchQuery={searchParams.search} />
         </Suspense>
       </div>
     </main>
