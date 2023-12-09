@@ -27,7 +27,7 @@ const ProjectsList: FC<ProjectsListProps> = ({
 
   const { data, fetchNextPage, hasNextPage } =
     api.post.getProjects.useInfiniteQuery(
-      { limit: 25, searchQuery: searchQuery },
+      { limit: 25, searchQuery },
       {
         initialData: {
           pages: [initialProjects],
@@ -61,14 +61,16 @@ const ProjectsList: FC<ProjectsListProps> = ({
                 height={367}
               />
               <div className="group relative flex max-w-[70%] items-center gap-2 p-4">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>
-                    {project.profileLink
-                      ?.replace("https://v0.dev/", "")
-                      .charAt(0)
-                      .toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <a href={project.profileLink!} target="_blank">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      {project.profileLink
+                        ?.replace("https://v0.dev/", "")
+                        .charAt(0)
+                        .toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </a>
                 <MyTooltip text={project.prompt!} />
               </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { FC } from "react";
 import { useState } from "react";
@@ -12,7 +13,6 @@ interface SearchBarProps {
 
 const SearchBar: FC<SearchBarProps> = ({ searchQuery }) => {
   const router = useRouter();
-  // const utils = api.useUtils();
   const [searchValue, setSearchValue] = useState(searchQuery ?? "");
   const [, setQuery] = useQueryParam(
     "search",
@@ -30,13 +30,25 @@ const SearchBar: FC<SearchBarProps> = ({ searchQuery }) => {
 
   return (
     <div className="mb-8 flex items-center gap-4">
-      <Input
-        onChange={handleChange}
-        value={searchValue}
-        placeholder="Search..."
-        className="shadow-none"
-        onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
-      />
+      <div className="relative flex w-full">
+        <Input
+          onChange={handleChange}
+          value={searchValue}
+          placeholder="Search..."
+          className="shadow-none"
+          onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
+        />
+        {searchValue.length > 0 && (
+          <X
+            onClick={() => {
+              setSearchValue("");
+              setQuery("");
+              router.refresh();
+            }}
+            className="absolute right-1 top-1 text-slate-400"
+          />
+        )}
+      </div>
       <Button className="ml-2 px-4" variant="default" onClick={handleSearch}>
         Search
       </Button>
