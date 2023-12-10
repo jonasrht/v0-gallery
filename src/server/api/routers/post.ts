@@ -14,8 +14,6 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .query(({ ctx, input }) => {
-      console.log('input', input);
-
       return ctx.db.query.projects.findMany({
         where: input.searchQuery ? (projects, { sql }) =>
           sql`MATCH(${projects.prompt}) AGAINST("${input.searchQuery}" IN NATURAL LANGUAGE MODE) AND id < ${input.cursor ?? 1000000} ORDER BY id DESC` :

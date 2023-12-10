@@ -45,7 +45,7 @@ const SearchBar: FC<SearchBarProps> = ({ searchQuery }) => {
               setQuery("");
               router.refresh();
             }}
-            className="absolute right-1 top-1 text-slate-400"
+            className="absolute right-1 top-1/2 -translate-y-1/2 text-slate-400"
           />
         )}
       </div>

@@ -12,8 +12,6 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  console.log(searchParams.search);
-
   const projects = await api.post.getProjects.query({
     limit: 25,
     searchQuery: searchParams.search,
