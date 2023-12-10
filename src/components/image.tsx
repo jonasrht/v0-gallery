@@ -1,6 +1,5 @@
 import { ImageOff } from "lucide-react";
 import { FC, useState } from "react";
-import { Skeleton } from "./ui/skeleton";
 
 interface ImageProps {
   src: string;
@@ -34,7 +33,7 @@ const Image: FC<ImageProps> = ({ src, alt, width, height, ...props }) => {
 
   return (
     <>
-      {loading && <Skeleton style={{ width, height }} />}
+      {/* {loading && <Skeleton style={{ width, height }} />} */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
@@ -43,7 +42,7 @@ const Image: FC<ImageProps> = ({ src, alt, width, height, ...props }) => {
         height={height}
         onError={handleImageError}
         onLoad={handleImageLoad}
-        className={`${loading ? "hidden" : "block"}`}
+        className={`${"block"}`}
         {...props}
       />
     </>
