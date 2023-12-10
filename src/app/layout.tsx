@@ -1,10 +1,10 @@
 import "@/styles/globals.css";
 
+import { TRPCReactProvider } from "@/trpc/react";
+import { Analytics } from "@vercel/analytics/react";
+import { Github, Twitter } from "lucide-react";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
-
-import { TRPCReactProvider } from "@/trpc/react";
-import { Github, Twitter } from "lucide-react";
 import Provider from "./provider";
 
 const inter = Inter({
@@ -34,13 +34,17 @@ export default function RootLayout({
                 <a href="https://twitter.com/Jonasrht" target="_blank">
                   <Twitter />
                 </a>
-                <a href="https://github.com/jonasrht/" target="_blank">
+                <a
+                  href="https://github.com/jonasrht/v0-gallery"
+                  target="_blank"
+                >
                   <Github />
                 </a>
               </div>
             </footer>
           </TRPCReactProvider>
         </Provider>
+        <Analytics />
       </body>
     </html>
   );
